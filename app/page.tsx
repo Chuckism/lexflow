@@ -1,65 +1,359 @@
-import Image from "next/image";
+'use client'
+
+import { useState } from 'react'
+
+const PRACTICE_AREAS = [
+  'Real Estate',
+  'Litigation',
+  'Corporate & Contracts',
+  'Employment',
+  'Intellectual Property',
+]
 
 export default function Home() {
+  const [mode, setMode] = useState<'workflow' | 'extractor'>('workflow')
+  const [practiceArea, setPracticeArea] = useState('Real Estate')
+  const [task, setTask] = useState('')
+  const [transcript, setTranscript] = useState('')
+  const [result, setResult] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleSubmit() {
+    if (mode === 'workflow' && !task.trim()) return
+    if (mode === 'extractor' && !transcript.trim()) return
+    setLoading(true)
+    setResult('')
+    try {
+      const res = await fetch('/api/lexflow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode, practiceArea, task, transcript }),
+      })
+      const data = await res.json()
+      setResult(data.result || data.error)
+    } catch (e) {
+      setResult('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main style={{
+      minHeight: '100vh',
+      background: '#f8f9fa',
+      fontFamily: "'Inter', -apple-system, sans-serif",
+    }}>
+
+      {/* Header */}
+      <div style={{
+        background: '#003366',
+        padding: '20px 40px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '36px', height: '36px',
+            background: 'rgba(255,255,255,0.15)',
+            borderRadius: '8px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '18px',
+          }}>⚖️</div>
+          <div>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+              LexFlow
+            </div>
+            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginTop: '1px' }}>
+              AI-Powered Legal Workflow Assistant
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
+          Powered by Claude AI
         </div>
-      </main>
-    </div>
-  );
+      </div>
+
+      {/* Hero */}
+      <div style={{
+        background: '#003366',
+        padding: '32px 40px 48px',
+        borderBottom: '4px solid #C9A84C',
+      }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ fontSize: '32px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em', marginBottom: '12px' }}>
+            From Legal Task to AI Workflow in Seconds
+          </div>
+          <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+            Generate practice-area specific AI workflows and prompts, or extract structured intelligence from client transcripts and documents.
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '40px 24px' }}>
+
+        {/* Mode Toggle */}
+        <div style={{
+          display: 'flex',
+          background: '#FFFFFF',
+          borderRadius: '12px',
+          padding: '6px',
+          marginBottom: '32px',
+          border: '1px solid #E0E0E0',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+        }}>
+          {([
+            { id: 'workflow', label: '⚡ Workflow Generator', desc: 'Get AI workflows and prompts for any legal task' },
+            { id: 'extractor', label: '🔍 Matter Intelligence Extractor', desc: 'Extract decisions, actions, and risks from transcripts' },
+          ] as const).map(m => (
+            <button
+              key={m.id}
+              onClick={() => { setMode(m.id); setResult('') }}
+              style={{
+                flex: 1,
+                padding: '14px 20px',
+                borderRadius: '8px',
+                border: 'none',
+                background: mode === m.id ? '#003366' : 'transparent',
+                color: mode === m.id ? '#FFFFFF' : '#666',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                transition: 'all 0.15s',
+                textAlign: 'center',
+              }}
+            >
+              <div style={{ fontSize: '14px', fontWeight: 700 }}>{m.label}</div>
+              <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '2px' }}>{m.desc}</div>
+            </button>
+          ))}
+        </div>
+
+        {/* Two Column Layout */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+
+          {/* Input Panel */}
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: '14px',
+            padding: '28px',
+            border: '1px solid #E0E0E0',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          }}>
+            <div style={{ fontSize: '16px', fontWeight: 700, color: '#003366', marginBottom: '20px' }}>
+              {mode === 'workflow' ? '⚡ Generate Workflow' : '🔍 Extract Intelligence'}
+            </div>
+
+            {mode === 'workflow' && (
+              <>
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
+                  Practice Area
+                </label>
+                <select
+                  value={practiceArea}
+                  onChange={e => setPracticeArea(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid #E0E0E0',
+                    fontSize: '14px',
+                    color: '#333',
+                    fontFamily: 'inherit',
+                    marginBottom: '16px',
+                    outline: 'none',
+                    background: '#FAFAFA',
+                  }}
+                >
+                  {PRACTICE_AREAS.map(a => (
+                    <option key={a} value={a}>{a}</option>
+                  ))}
+                </select>
+
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
+                  Describe Your Task
+                </label>
+                <textarea
+                  value={task}
+                  onChange={e => setTask(e.target.value)}
+                  placeholder="e.g. Review a commercial lease agreement for a retail tenant and identify key risk clauses..."
+                  rows={6}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid #E0E0E0',
+                    fontSize: '14px',
+                    color: '#333',
+                    fontFamily: 'inherit',
+                    resize: 'vertical',
+                    outline: 'none',
+                    lineHeight: 1.6,
+                    background: '#FAFAFA',
+                  }}
+                />
+              </>
+            )}
+
+            {mode === 'extractor' && (
+              <>
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
+                  Paste Transcript or Document
+                </label>
+                <textarea
+                  value={transcript}
+                  onChange={e => setTranscript(e.target.value)}
+                  placeholder="Paste your client meeting transcript, deposition notes, email thread, or any legal document here..."
+                  rows={10}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid #E0E0E0',
+                    fontSize: '14px',
+                    color: '#333',
+                    fontFamily: 'inherit',
+                    resize: 'vertical',
+                    outline: 'none',
+                    lineHeight: 1.6,
+                    background: '#FAFAFA',
+                  }}
+                />
+              </>
+            )}
+
+            <button
+              onClick={handleSubmit}
+              disabled={loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())}
+              style={{
+                width: '100%',
+                marginTop: '16px',
+                padding: '14px',
+                borderRadius: '9px',
+                border: 'none',
+                background: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
+                  ? '#E0E0E0'
+                  : '#003366',
+                color: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
+                  ? '#999'
+                  : '#FFFFFF',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
+                  ? 'not-allowed'
+                  : 'pointer',
+                fontFamily: 'inherit',
+                transition: 'all 0.15s',
+              }}
+            >
+              {loading ? '⏳ Processing...' : mode === 'workflow' ? '⚡ Generate Workflow' : '🔍 Extract Intelligence'}
+            </button>
+          </div>
+
+          {/* Output Panel */}
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: '14px',
+            padding: '28px',
+            border: '1px solid #E0E0E0',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            minHeight: '400px',
+          }}>
+            <div style={{ fontSize: '16px', fontWeight: 700, color: '#003366', marginBottom: '20px' }}>
+              📋 Results
+            </div>
+
+            {!result && !loading && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '300px',
+                gap: '12px',
+                opacity: 0.4,
+                textAlign: 'center',
+              }}>
+                <span style={{ fontSize: '40px' }}>⚖️</span>
+                <span style={{ fontSize: '13px', color: '#666', lineHeight: 1.6, maxWidth: '240px' }}>
+                  {mode === 'workflow'
+                    ? 'Select a practice area, describe your task, and generate your AI workflow.'
+                    : 'Paste a transcript or document to extract structured legal intelligence.'}
+                </span>
+              </div>
+            )}
+
+            {loading && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '300px',
+                gap: '16px',
+              }}>
+                <div style={{
+                  width: '40px', height: '40px',
+                  border: '3px solid rgba(0,51,102,0.2)',
+                  borderTopColor: '#003366',
+                  borderRadius: '50%',
+                  animation: 'spin 0.8s linear infinite',
+                }} />
+                <span style={{ fontSize: '13px', color: '#666' }}>
+                  {mode === 'workflow' ? 'Generating your workflow...' : 'Extracting intelligence...'}
+                </span>
+                <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+              </div>
+            )}
+
+            {result && !loading && (
+              <div style={{
+                fontSize: '13px',
+                color: '#333',
+                lineHeight: 1.8,
+                whiteSpace: 'pre-wrap',
+                overflowY: 'auto',
+                maxHeight: '520px',
+              }}>
+                {result.split('\n').map((line, i) => {
+                  if (line.startsWith('## ')) {
+                    return (
+                      <div key={i} style={{
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        color: '#003366',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
+                        marginTop: '20px',
+                        marginBottom: '8px',
+                        paddingBottom: '4px',
+                        borderBottom: '2px solid #C9A84C',
+                      }}>
+                        {line.replace('## ', '')}
+                      </div>
+                    )
+                  }
+                  return <div key={i}>{line}</div>
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          marginTop: '40px',
+          textAlign: 'center',
+          fontSize: '12px',
+          color: '#999',
+          paddingBottom: '40px',
+        }}>
+          LexFlow is an AI assistant tool. All outputs should be reviewed by a licensed attorney before use.
+          <br />
+          Built by <a href="https://linkedin.com/in/chucknealis" style={{ color: '#003366', fontWeight: 600 }}>Chuck Nealis</a> · AI Whisperer · L&D & Change Management Professional
+        </div>
+      </div>
+    </main>
+  )
 }
