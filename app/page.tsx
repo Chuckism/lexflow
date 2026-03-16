@@ -134,122 +134,200 @@ export default function Home() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
           {/* Input Panel */}
-          <div style={{
-            background: '#FFFFFF',
-            borderRadius: '14px',
-            padding: '28px',
-            border: '1px solid #E0E0E0',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          }}>
-            <div style={{ fontSize: '16px', fontWeight: 700, color: '#003366', marginBottom: '20px' }}>
-              {mode === 'workflow' ? '⚡ Generate Workflow' : '🔍 Extract Intelligence'}
-            </div>
+<div style={{
+  background: '#FFFFFF',
+  borderRadius: '14px',
+  padding: '28px',
+  border: '1px solid #E0E0E0',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+}}>
+  <div style={{ fontSize: '16px', fontWeight: 700, color: '#003366', marginBottom: '20px' }}>
+    {mode === 'workflow' ? '⚡ Generate Workflow' : '🔍 Extract Intelligence'}
+  </div>
 
-            {mode === 'workflow' && (
-              <>
-                <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
-                  Practice Area
-                </label>
-                <select
-                  value={practiceArea}
-                  onChange={e => setPracticeArea(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
-                    border: '1px solid #E0E0E0',
-                    fontSize: '14px',
-                    color: '#333',
-                    fontFamily: 'inherit',
-                    marginBottom: '16px',
-                    outline: 'none',
-                    background: '#FAFAFA',
-                  }}
-                >
-                  {PRACTICE_AREAS.map(a => (
-                    <option key={a} value={a}>{a}</option>
-                  ))}
-                </select>
+  {mode === 'workflow' && (
+    <>
+      <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
+        Practice Area
+      </label>
+      <select
+        value={practiceArea}
+        onChange={e => setPracticeArea(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '10px 14px',
+          borderRadius: '8px',
+          border: '1px solid #E0E0E0',
+          fontSize: '14px',
+          color: '#333',
+          fontFamily: 'inherit',
+          marginBottom: '16px',
+          outline: 'none',
+          background: '#FAFAFA',
+        }}
+      >
+        {PRACTICE_AREAS.map(a => (
+          <option key={a} value={a}>{a}</option>
+        ))}
+      </select>
 
-                <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
-                  Describe Your Task
-                </label>
-                <textarea
-                  value={task}
-                  onChange={e => setTask(e.target.value)}
-                  placeholder="e.g. Review a commercial lease agreement for a retail tenant and identify key risk clauses..."
-                  rows={6}
-                  style={{
-                    width: '100%',
-                    padding: '12px 14px',
-                    borderRadius: '8px',
-                    border: '1px solid #E0E0E0',
-                    fontSize: '14px',
-                    color: '#333',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    outline: 'none',
-                    lineHeight: 1.6,
-                    background: '#FAFAFA',
-                  }}
-                />
-              </>
-            )}
+      <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
+        Describe Your Task
+      </label>
+      <textarea
+        value={task}
+        onChange={e => setTask(e.target.value)}
+        placeholder="Describe your legal task here, or try a sample below..."
+        rows={6}
+        style={{
+          width: '100%',
+          padding: '12px 14px',
+          borderRadius: '8px',
+          border: '1px solid #E0E0E0',
+          fontSize: '14px',
+          color: '#333',
+          fontFamily: 'inherit',
+          resize: 'vertical',
+          outline: 'none',
+          lineHeight: 1.6,
+          background: '#FAFAFA',
+        }}
+      />
 
-            {mode === 'extractor' && (
-              <>
-                <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
-                  Paste Transcript or Document
-                </label>
-                <textarea
-                  value={transcript}
-                  onChange={e => setTranscript(e.target.value)}
-                  placeholder="Paste your client meeting transcript, deposition notes, email thread, or any legal document here..."
-                  rows={10}
-                  style={{
-                    width: '100%',
-                    padding: '12px 14px',
-                    borderRadius: '8px',
-                    border: '1px solid #E0E0E0',
-                    fontSize: '14px',
-                    color: '#333',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    outline: 'none',
-                    lineHeight: 1.6,
-                    background: '#FAFAFA',
-                  }}
-                />
-              </>
-            )}
-
+      {/* Workflow Samples */}
+      <div style={{ marginTop: '12px', marginBottom: '4px' }}>
+        <div style={{ fontSize: '11px', color: '#999', marginBottom: '8px', fontWeight: 600 }}>
+          TRY A SAMPLE — OR USE YOUR OWN
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {[
+            { area: 'Real Estate', text: 'Review a commercial lease agreement for a retail tenant and identify key risk clauses' },
+            { area: 'Employment', text: 'Draft an employment separation agreement and identify potential WARN Act issues' },
+          ].map((sample, i) => (
             <button
-              onClick={handleSubmit}
-              disabled={loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())}
+              key={i}
+              onClick={() => { setPracticeArea(sample.area); setTask(sample.text) }}
               style={{
-                width: '100%',
-                marginTop: '16px',
-                padding: '14px',
-                borderRadius: '9px',
-                border: 'none',
-                background: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
-                  ? '#E0E0E0'
-                  : '#003366',
-                color: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
-                  ? '#999'
-                  : '#FFFFFF',
-                fontSize: '14px',
-                fontWeight: 700,
-                cursor: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
-                  ? 'not-allowed'
-                  : 'pointer',
+                padding: '8px 12px',
+                borderRadius: '7px',
+                border: '1px solid rgba(0,51,102,0.15)',
+                background: 'rgba(0,51,102,0.04)',
+                color: '#003366',
+                fontSize: '12px',
+                fontWeight: 500,
+                cursor: 'pointer',
                 fontFamily: 'inherit',
+                textAlign: 'left',
+                lineHeight: 1.4,
                 transition: 'all 0.15s',
               }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,51,102,0.08)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,51,102,0.04)'}
             >
-              {loading ? '⏳ Processing...' : mode === 'workflow' ? '⚡ Generate Workflow' : '🔍 Extract Intelligence'}
+              📋 {sample.text}
             </button>
-          </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )}
+
+  {mode === 'extractor' && (
+    <>
+      <label style={{ fontSize: '11px', fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '6px' }}>
+        Paste Transcript or Document
+      </label>
+      <textarea
+        value={transcript}
+        onChange={e => setTranscript(e.target.value)}
+        placeholder="Paste your client meeting transcript, deposition notes, email thread, or any legal document here, or try a sample below..."
+        rows={8}
+        style={{
+          width: '100%',
+          padding: '12px 14px',
+          borderRadius: '8px',
+          border: '1px solid #E0E0E0',
+          fontSize: '14px',
+          color: '#333',
+          fontFamily: 'inherit',
+          resize: 'vertical',
+          outline: 'none',
+          lineHeight: 1.6,
+          background: '#FAFAFA',
+        }}
+      />
+
+      {/* Extractor Samples */}
+      <div style={{ marginTop: '12px', marginBottom: '4px' }}>
+        <div style={{ fontSize: '11px', color: '#999', marginBottom: '8px', fontWeight: 600 }}>
+          TRY A SAMPLE — OR USE YOUR OWN
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {[
+            {
+              label: 'Real Estate Client Meeting',
+              text: `Meeting with client James Hartwell, March 16, 2026. Present: Attorney Sarah Chen, client James Hartwell, and property manager Tom Willis.\n\nJames wants to proceed with purchasing the commercial property at 4821 Commerce Drive, Dallas TX. Agreed purchase price is $2.4 million. James needs to secure financing by April 15 or the deal falls through. Sarah will order the title search by end of week. Tom confirmed there is an existing tenant on a month-to-month lease who needs 60 days notice to vacate. James is concerned about the HVAC system which appears to be original to the 1987 construction. Sarah recommended getting an independent inspection before closing. James agreed. Inspection must be completed before April 1. Sarah will draft the purchase agreement by March 20. James mentioned he has a silent partner named David Kline who needs to sign all documents but is currently traveling in Europe and unreachable until March 25. Closing is targeted for April 30.`,
+            },
+            {
+              label: 'Employment Dispute Intake',
+              text: `Initial client intake with Maria Gonzalez, March 16, 2026. Attorney present: David Park.\n\nMaria was terminated from Apex Technologies on March 10 after 8 years of employment. She was given no written reason for termination. HR told her verbally it was due to "restructuring" but her position was posted on LinkedIn three days after her termination. Maria had received a positive performance review in January with a merit raise. She signed a non-compete agreement in 2019 covering a 2-year period within 50 miles. She has emails showing her manager made comments about her age (she is 57) during a team meeting in February. She was offered a severance package of 4 weeks pay but has not signed it yet. David advised her not to sign anything until they review it. Maria wants to understand her options. David will review the non-compete, severance agreement, and gather employment records by March 23.`,
+            },
+          ].map((sample, i) => (
+            <button
+              key={i}
+              onClick={() => setTranscript(sample.text)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: '7px',
+                border: '1px solid rgba(0,51,102,0.15)',
+                background: 'rgba(0,51,102,0.04)',
+                color: '#003366',
+                fontSize: '12px',
+                fontWeight: 500,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                textAlign: 'left',
+                lineHeight: 1.4,
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,51,102,0.08)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,51,102,0.04)'}
+            >
+              📋 {sample.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  )}
+
+  <button
+    onClick={handleSubmit}
+    disabled={loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())}
+    style={{
+      width: '100%',
+      marginTop: '16px',
+      padding: '14px',
+      borderRadius: '9px',
+      border: 'none',
+      background: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
+        ? '#E0E0E0'
+        : '#003366',
+      color: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
+        ? '#999'
+        : '#FFFFFF',
+      fontSize: '14px',
+      fontWeight: 700,
+      cursor: loading || (mode === 'workflow' ? !task.trim() : !transcript.trim())
+        ? 'not-allowed'
+        : 'pointer',
+      fontFamily: 'inherit',
+      transition: 'all 0.15s',
+    }}
+  >
+    {loading ? '⏳ Processing...' : mode === 'workflow' ? '⚡ Generate Workflow' : '🔍 Extract Intelligence'}
+  </button>
+</div>
 
           {/* Output Panel */}
           <div style={{
