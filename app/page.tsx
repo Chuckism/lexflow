@@ -418,7 +418,37 @@ export default function Home() {
             )}
           </div>
         </div>
-
+{/* Instructions */}
+<div style={{
+  marginTop: '32px',
+  padding: '24px 28px',
+  borderRadius: '14px',
+  background: '#FFFFFF',
+  border: '1px solid #E0E0E0',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+}}>
+  <div style={{ fontSize: '14px', fontWeight: 700, color: '#003366', marginBottom: '16px' }}>
+    🚀 How to Use LexFlow
+  </div>
+  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+    <div>
+      <div style={{ fontSize: '13px', fontWeight: 700, color: '#333', marginBottom: '6px' }}>
+        ⚡ Workflow Generator
+      </div>
+      <div style={{ fontSize: '13px', color: '#666', lineHeight: 1.6 }}>
+        Select a practice area, describe your legal task, and instantly receive a step-by-step AI workflow, ready-to-use prompts for Harvey, CoCounsel, or Microsoft Copilot, a verification checklist, and practice-specific risk flags. Try a sample or enter your own task.
+      </div>
+    </div>
+    <div>
+      <div style={{ fontSize: '13px', fontWeight: 700, color: '#333', marginBottom: '6px' }}>
+        🔍 Matter Intelligence Extractor
+      </div>
+      <div style={{ fontSize: '13px', color: '#666', lineHeight: 1.6 }}>
+        Paste any client meeting transcript, deposition notes, email thread, or legal document and LexFlow instantly extracts key decisions, action items, critical dates, risk flags, and follow-up questions. Try a sample or paste your own content.
+      </div>
+    </div>
+  </div>
+</div>
         {/* Footer */}
         <div style={{
           marginTop: '40px',
